@@ -17,6 +17,8 @@
     background-image:radial-gradient(900px 500px at 85% -5%, rgba(99,102,241,.16), transparent),
                      radial-gradient(700px 400px at 0% 0%, rgba(236,72,153,.09), transparent)}
   .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  /* let product media break out wider than the text column so it's readable */
+  .breakout{width:min(1280px,calc(100vw - 32px));margin-left:50%;transform:translateX(-50%)}
   a{color:inherit;text-decoration:none}
 
   nav{display:flex;justify-content:space-between;align-items:center;padding:22px 0}
@@ -133,8 +135,8 @@
   <section id="film" style="padding-top:20px">
     <div class="kicker">40 seconds</div>
     <h2>Watch it work.</h2>
-    <video controls preload="metadata" playsinline
-      style="width:100%;max-width:920px;border-radius:18px;border:1px solid var(--line);box-shadow:0 30px 80px rgba(0,0,0,.55);margin-top:26px;display:block"
+    <video controls preload="metadata" playsinline class="breakout"
+      style="border-radius:18px;border:1px solid var(--line);box-shadow:0 30px 80px rgba(0,0,0,.55);margin-top:26px;display:block"
       poster="assets/shot-overview.png">
       <source src="assets/spend-analyzer-demo.mp4" type="video/mp4">
       Your browser doesn't support video — <a href="assets/spend-analyzer-demo.mp4">download the demo</a>.
@@ -145,21 +147,19 @@
     <div class="kicker">Real screenshots, real data</div>
     <h2>Not mockups. The actual product.</h2>
     <p class="lead">Captured live from the founder's own installation (a few private payees removed — because privacy is the point).</p>
-    <div style="display:grid;gap:22px;margin-top:36px">
+    <div class="breakout" style="display:grid;gap:30px;margin-top:36px">
       <figure style="margin:0">
         <img src="assets/shot-ask.png" alt="Ask AI answering a plain-English question about food spend" style="width:100%;border-radius:16px;border:1px solid var(--line)">
-        <figcaption style="color:var(--faint);font-size:.85rem;margin-top:10px">Plain English in, exact answer out — computed from your own data.</figcaption>
+        <figcaption style="color:var(--faint);font-size:.9rem;margin-top:12px">Plain English in, exact answer out — computed from your own data.</figcaption>
       </figure>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px" class="screens2">
-        <figure style="margin:0">
-          <img src="assets/shot-subscriptions.png" alt="Subscription radar with detected recurring charges" style="width:100%;border-radius:16px;border:1px solid var(--line)">
-          <figcaption style="color:var(--faint);font-size:.85rem;margin-top:10px">Subscription radar: cadence, next due, true yearly cost.</figcaption>
-        </figure>
-        <figure style="margin:0">
-          <img src="assets/shot-cashflow.png" alt="Monthly cash flow chart" style="width:100%;border-radius:16px;border:1px solid var(--line)">
-          <figcaption style="color:var(--faint);font-size:.85rem;margin-top:10px">Cash flow with refunds and broker payouts netted correctly.</figcaption>
-        </figure>
-      </div>
+      <figure style="margin:0">
+        <img src="assets/shot-subscriptions.png" alt="Subscription radar with detected recurring charges" style="width:100%;border-radius:16px;border:1px solid var(--line)">
+        <figcaption style="color:var(--faint);font-size:.9rem;margin-top:12px">Subscription radar: cadence, next due, true yearly cost — with price-hike badges.</figcaption>
+      </figure>
+      <figure style="margin:0">
+        <img src="assets/shot-cashflow.png" alt="Monthly cash flow chart" style="width:100%;border-radius:16px;border:1px solid var(--line)">
+        <figcaption style="color:var(--faint);font-size:.9rem;margin-top:12px">Cash flow with refunds and broker payouts netted correctly.</figcaption>
+      </figure>
     </div>
   </section>
 
