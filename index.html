@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spend Analyzer — AI expense intelligence that never leaves your machine</title>
+<meta name="description" content="Reads your bank emails & card statements locally, categorizes with AI, and answers questions about your money. Your data stays a file on your own computer.">
+<style>
+  :root{
+    --bg:#020617; --panel:#0f172a; --panel2:#1e293b; --line:#1e293b;
+    --text:#e2e8f0; --dim:#94a3b8; --faint:#64748b;
+    --indigo:#6366f1; --violet:#8b5cf6; --pink:#ec4899; --emerald:#10b981; --amber:#f59e0b; --sky:#38bdf8;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;
+    background-image:radial-gradient(900px 500px at 85% -5%, rgba(99,102,241,.16), transparent),
+                     radial-gradient(700px 400px at 0% 0%, rgba(236,72,153,.09), transparent)}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  a{color:inherit;text-decoration:none}
+
+  nav{display:flex;justify-content:space-between;align-items:center;padding:22px 0}
+  .logo{display:flex;gap:10px;align-items:center;font-weight:800;font-size:1.15rem}
+  .logo .mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--indigo),var(--pink));display:grid;place-items:center;font-size:1rem}
+  .navlinks{display:flex;gap:26px;color:var(--dim);font-size:.92rem}
+  .navlinks a:hover{color:var(--text)}
+  .btn{display:inline-block;padding:12px 26px;border-radius:12px;font-weight:600;font-size:.95rem;transition:.2s}
+  .btn-primary{background:linear-gradient(90deg,var(--indigo),var(--violet));box-shadow:0 8px 30px rgba(99,102,241,.35)}
+  .btn-primary:hover{transform:translateY(-2px)}
+  .btn-ghost{border:1px solid var(--line);color:var(--dim)}
+  .btn-ghost:hover{color:var(--text);border-color:var(--faint)}
+
+  .hero{padding:84px 0 60px;text-align:center}
+  .pill{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(16,185,129,.35);color:var(--emerald);background:rgba(16,185,129,.08);
+    padding:7px 16px;border-radius:999px;font-size:.82rem;font-weight:600;margin-bottom:26px}
+  h1{font-size:clamp(2.2rem,5.5vw,3.7rem);line-height:1.12;font-weight:800;letter-spacing:-.02em}
+  h1 .grad{background:linear-gradient(90deg,#a5b4fc,#c4b5fd,#f9a8d4);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{max-width:620px;margin:22px auto 34px;color:var(--dim);font-size:1.13rem}
+  .cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .trust{margin-top:22px;color:var(--faint);font-size:.85rem}
+
+  .shot{margin:64px auto 0;max-width:920px;border:1px solid var(--line);border-radius:18px;overflow:hidden;
+    box-shadow:0 30px 80px rgba(0,0,0,.55), 0 0 0 1px rgba(99,102,241,.15);background:var(--panel)}
+  .shot .bar{display:flex;gap:6px;padding:11px 14px;border-bottom:1px solid var(--line)}
+  .shot .dot{width:10px;height:10px;border-radius:50%}
+  .mock{padding:26px;display:grid;grid-template-columns:1.4fr 1fr;gap:18px;text-align:left}
+  .mcard{background:rgba(30,41,59,.5);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .mlabel{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);margin-bottom:6px}
+  .mval{font-size:1.5rem;font-weight:800}
+  .bars{display:flex;align-items:flex-end;gap:7px;height:88px;margin-top:12px}
+  .bars i{flex:1;border-radius:4px 4px 0 0;background:linear-gradient(180deg,var(--indigo),rgba(99,102,241,.35))}
+  .askrow{display:flex;gap:10px;margin-top:14px}
+  .askbox{flex:1;background:#0b1222;border:1px solid var(--line);border-radius:10px;padding:10px 14px;color:var(--dim);font-size:.85rem}
+  .askbtn{background:var(--indigo);border-radius:10px;padding:10px 16px;font-size:.85rem;font-weight:700}
+  .answer{margin-top:10px;background:rgba(99,102,241,.09);border:1px solid rgba(99,102,241,.3);border-radius:10px;padding:11px 14px;font-size:.88rem}
+  .subrow{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(30,41,59,.6);font-size:.85rem}
+  .hike{font-size:.68rem;font-weight:800;background:rgba(244,63,94,.15);color:#fda4af;padding:2px 7px;border-radius:6px}
+
+  section{padding:76px 0}
+  .kicker{color:var(--indigo);font-weight:700;font-size:.85rem;text-transform:uppercase;letter-spacing:.1em}
+  h2{font-size:clamp(1.6rem,3.4vw,2.3rem);font-weight:800;margin:10px 0 14px;letter-spacing:-.01em}
+  .lead{color:var(--dim);max-width:640px;font-size:1.05rem}
+
+  .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:40px}
+  .card{background:rgba(15,23,42,.75);border:1px solid var(--line);border-radius:16px;padding:26px;transition:.2s}
+  .card:hover{border-color:rgba(99,102,241,.45);transform:translateY(-3px)}
+  .card .ico{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;font-size:1.25rem;margin-bottom:14px}
+  .card h3{font-size:1.06rem;margin-bottom:8px}
+  .card p{color:var(--dim);font-size:.93rem}
+
+  .privacy{background:linear-gradient(180deg,rgba(16,185,129,.05),transparent);border-top:1px solid rgba(16,185,129,.15);border-bottom:1px solid rgba(16,185,129,.15)}
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:38px}
+  .vs .col{border-radius:16px;padding:26px;border:1px solid var(--line)}
+  .vs .them{background:rgba(244,63,94,.05);border-color:rgba(244,63,94,.2)}
+  .vs .us{background:rgba(16,185,129,.06);border-color:rgba(16,185,129,.3)}
+  .vs h3{margin-bottom:14px;font-size:1rem}
+  .vs li{list-style:none;padding:7px 0;color:var(--dim);font-size:.93rem;display:flex;gap:10px}
+  .vs .them li::before{content:"✕";color:#f87171;font-weight:800}
+  .vs .us li::before{content:"✓";color:var(--emerald);font-weight:800}
+
+  .story{border-left:3px solid var(--amber);background:rgba(245,158,11,.05);border-radius:0 14px 14px 0;padding:22px 26px;margin-top:18px}
+  .story b{color:var(--amber)}
+  .story p{color:var(--dim);font-size:.95rem}
+
+  .price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:40px}
+  .price{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:32px;text-align:center;position:relative}
+  .price.hot{border-color:var(--indigo);box-shadow:0 0 50px rgba(99,102,241,.22)}
+  .price .tag{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:linear-gradient(90deg,var(--indigo),var(--pink));
+    font-size:.72rem;font-weight:800;padding:5px 14px;border-radius:999px;white-space:nowrap}
+  .price h3{font-size:1rem;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
+  .price .amt{font-size:2.5rem;font-weight:800;margin:14px 0 2px}
+  .price .amt small{font-size:1rem;color:var(--faint);font-weight:500}
+  .price .strike{color:var(--faint);text-decoration:line-through;font-size:.95rem}
+  .price ul{margin:20px 0 26px;text-align:left}
+  .price li{list-style:none;padding:6px 0;color:var(--dim);font-size:.9rem}
+  .price li::before{content:"✓ ";color:var(--emerald);font-weight:800}
+
+  .faq{max-width:760px}
+  details{border-bottom:1px solid var(--line);padding:18px 0}
+  summary{cursor:pointer;font-weight:600;font-size:1.02rem}
+  details p{color:var(--dim);margin-top:10px;font-size:.95rem}
+
+  footer{border-top:1px solid var(--line);padding:36px 0;color:var(--faint);font-size:.85rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+  @media(max-width:760px){.mock{grid-template-columns:1fr}.vs{grid-template-columns:1fr}.navlinks{display:none}.screens2{grid-template-columns:1fr !important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <div class="logo"><div class="mark">₹</div>Spend Analyzer</div>
+    <div class="navlinks">
+      <a href="#features">Features</a><a href="#privacy">Privacy</a><a href="#stories">Proof</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a>
+    </div>
+    <a class="btn btn-primary" href="#pricing">Get it — ₹1,499</a>
+  </nav>
+
+  <div class="hero">
+    <div class="pill">🔒 Local-first — your data never leaves your machine</div>
+    <h1>Apps this smart usually<br><span class="grad">cost your privacy.</span><br>This one runs on your laptop.</h1>
+    <p class="sub">Spend Analyzer reads the bank emails and card statements you already get, categorizes every rupee with AI, and answers questions about your money — from a database that lives on <b>your own computer</b>.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#pricing">Start 14-day free trial</a>
+      <a class="btn btn-ghost" href="#features">See what it catches ↓</a>
+    </div>
+    <div class="trust">No SMS permission · No Account Aggregator consent · No cloud database · HDFC, ICICI, Zerodha &amp; UPI</div>
+
+    <div class="shot">
+      <div class="bar"><span class="dot" style="background:#f87171"></span><span class="dot" style="background:#fbbf24"></span><span class="dot" style="background:#34d399"></span></div>
+      <img src="assets/shot-overview.png" alt="Spend Analyzer dashboard — real product screenshot" style="display:block;width:100%">
+    </div>
+  </div>
+
+  <section id="film" style="padding-top:20px">
+    <div class="kicker">40 seconds</div>
+    <h2>Watch it work.</h2>
+    <video controls preload="metadata" playsinline
+      style="width:100%;max-width:920px;border-radius:18px;border:1px solid var(--line);box-shadow:0 30px 80px rgba(0,0,0,.55);margin-top:26px;display:block"
+      poster="assets/shot-overview.png">
+      <source src="assets/spend-analyzer-demo.mp4" type="video/mp4">
+      Your browser doesn't support video — <a href="assets/spend-analyzer-demo.mp4">download the demo</a>.
+    </video>
+  </section>
+
+  <section id="screens" style="padding-top:10px">
+    <div class="kicker">Real screenshots, real data</div>
+    <h2>Not mockups. The actual product.</h2>
+    <p class="lead">Captured live from the founder's own installation (a few private payees removed — because privacy is the point).</p>
+    <div style="display:grid;gap:22px;margin-top:36px">
+      <figure style="margin:0">
+        <img src="assets/shot-ask.png" alt="Ask AI answering a plain-English question about food spend" style="width:100%;border-radius:16px;border:1px solid var(--line)">
+        <figcaption style="color:var(--faint);font-size:.85rem;margin-top:10px">Plain English in, exact answer out — computed from your own data.</figcaption>
+      </figure>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px" class="screens2">
+        <figure style="margin:0">
+          <img src="assets/shot-subscriptions.png" alt="Subscription radar with detected recurring charges" style="width:100%;border-radius:16px;border:1px solid var(--line)">
+          <figcaption style="color:var(--faint);font-size:.85rem;margin-top:10px">Subscription radar: cadence, next due, true yearly cost.</figcaption>
+        </figure>
+        <figure style="margin:0">
+          <img src="assets/shot-cashflow.png" alt="Monthly cash flow chart" style="width:100%;border-radius:16px;border:1px solid var(--line)">
+          <figcaption style="color:var(--faint);font-size:.85rem;margin-top:10px">Cash flow with refunds and broker payouts netted correctly.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="kicker">What it does</div>
+    <h2>Mint-class intelligence. Zero data surrender.</h2>
+    <p class="lead">Point it at your Gmail once. It does the rest — nightly, automatically, locally.</p>
+    <div class="grid3">
+      <div class="card"><div class="ico" style="background:rgba(99,102,241,.15)">🧠</div><h3>Three-tier AI categorization</h3><p>Your corrections always win. Then a self-training ML model. Then Gemini AI for the hard cases — cached, so each merchant costs at most one AI call, ever.</p></div>
+      <div class="card"><div class="ico" style="background:rgba(56,189,248,.15)">💬</div><h3>Ask your money anything</h3><p>"Biggest merchant this year?" "Food spend last month?" Plain-English answers computed from your own data. The AI only ever sees aggregates — never raw transactions.</p></div>
+      <div class="card"><div class="ico" style="background:rgba(16,185,129,.15)">📈</div><h3>Cash flow & savings rate</h3><p>Income vs spend vs savings, month by month. Refunds net out. Zerodha payouts count as money coming back — not spending (most apps get this wrong).</p></div>
+      <div class="card"><div class="ico" style="background:rgba(139,92,246,.15)">🔁</div><h3>Subscription radar</h3><p>Recurring charges detected automatically, with price-hike badges, next-due dates, and true yearly cost. It caught a real +8% LinkedIn hike its owner never noticed.</p></div>
+      <div class="card"><div class="ico" style="background:rgba(245,158,11,.15)">👯</div><h3>Duplicate & failed-payment detection</h3><p>UPI retries, failed payments, and email-vs-statement double-captures flagged with one-click auto-resolve. Every flag reversible.</p></div>
+      <div class="card"><div class="ico" style="background:rgba(236,72,153,.15)">📬</div><h3>Monthly digest to your inbox</h3><p>On the 1st, a month-end report — cash flow, top categories, budget breaches, anomalies, subscriptions — emailed from you, to you.</p></div>
+    </div>
+  </section>
+
+  <section class="privacy" id="privacy">
+    <div class="kicker" style="color:var(--emerald)">Privacy as architecture</div>
+    <h2>Not a policy promise. A design fact.</h2>
+    <p class="lead">Your financial database is a SQLite file in a folder on your computer. We couldn't read it if we wanted to — there is no server.</p>
+    <div class="vs">
+      <div class="col them">
+        <h3>☁️ Typical finance apps</h3>
+        <ul>
+          <li>Read all your SMS, forever</li>
+          <li>Account Aggregator consent to your full bank history</li>
+          <li>Your data on their servers, their retention rules</li>
+          <li>Business model: sell you loans &amp; cards from your data</li>
+        </ul>
+      </div>
+      <div class="col us">
+        <h3>💻 Spend Analyzer</h3>
+        <ul>
+          <li>Reads only bank-alert emails, on your machine</li>
+          <li>Google login with read-only scope — revoke anytime</li>
+          <li>Database: one local file you can copy, back up, delete</li>
+          <li>Business model: you buy the software. That's it.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="stories">
+    <div class="kicker" style="color:var(--amber)">Real detections</div>
+    <h2>Built by catching real money errors.</h2>
+    <p class="lead">These happened on the founder's own data during development. Your bank feed has these too — you just haven't seen them yet.</p>
+    <div class="story"><b>₹2,95,000 double-count.</b><p>A failed Zerodha payment and its successful retry were both recorded by the bank's emails. Every total was inflated by ₹2.95 lakh until the duplicate detector flagged the pair — with the reason: "its email says the payment failed."</p></div>
+    <div class="story"><b>₹23.8 lakh of payouts miscounted as spending.</b><p>Broker payouts are money coming <i>back</i>. Apps that read transaction feeds naively count them as expenses. Spend Analyzer nets them against investments — turning a fictional ₹25L "spend month" into the real ₹6.6L.</p></div>
+    <div class="story"><b>The 8% price hike nobody noticed.</b><p>LinkedIn Premium via Google Play quietly went from ₹1,850 to ₹1,999. The subscription radar badge caught it in the first scan.</p></div>
+  </section>
+
+  <section id="pricing">
+    <div class="kicker">Pricing</div>
+    <h2>No subscription. We don't need one.</h2>
+    <p class="lead">Cloud apps charge monthly because they run servers on your data. Spend Analyzer runs on your laptop — so you just buy it once.</p>
+    <div class="price-grid">
+      <div class="price">
+        <h3>Trial</h3>
+        <div class="amt">₹0</div>
+        <div style="color:var(--faint);font-size:.9rem">14 days, full-featured</div>
+        <ul><li>Everything included</li><li>Your data stays yours</li><li>No card required</li></ul>
+        <a class="btn btn-ghost" href="#" style="display:block">Download trial</a>
+      </div>
+      <div class="price hot">
+        <div class="tag">LAUNCH OFFER</div>
+        <h3>Lifetime</h3>
+        <div class="amt">₹1,499</div>
+        <div class="strike">₹2,499 after launch</div>
+        <ul><li>Pay once, own forever</li><li>1 year of updates included</li><li>All features, all banks we support</li><li>Bring your own free Gemini key</li></ul>
+        <a class="btn btn-primary" href="#" style="display:block">Buy Lifetime</a>
+      </div>
+      <div class="price">
+        <h3>Pro yearly</h3>
+        <div class="amt">₹999<small>/yr</small></div>
+        <div style="color:var(--faint);font-size:.9rem">for the update stream</div>
+        <ul><li>Continuous updates</li><li>New bank parsers first</li><li>Priority parser requests</li></ul>
+        <a class="btn btn-ghost" href="#" style="display:block">Go Pro</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="kicker">FAQ</div>
+    <h2>Fair questions.</h2>
+    <div class="faq">
+      <details><summary>How does it get my transactions without SMS or Account Aggregator access?</summary><p>Your bank already emails you every transaction alert. Spend Analyzer connects to Gmail with a read-only scope, finds those alerts (and your card-statement PDFs), and parses them locally. Revoke access anytime from your Google account.</p></details>
+      <details><summary>Does the AI see my bank data?</summary><p>Only if you enable it, and even then it only receives merchant names and monthly aggregates — never raw transactions, account numbers, or balances. Turn AI off entirely with one setting and the rules + ML engine still categorizes everything at zero API cost.</p></details>
+      <details><summary>Which banks work today?</summary><p>HDFC Bank, ICICI Bank, Zerodha and UPI alerts, plus HDFC credit-card PDF statements. Each new bank is a small parser — SBI, Axis and Kotak are next. Request yours and it moves up the list.</p></details>
+      <details><summary>What do I need to run it?</summary><p>A Windows laptop (Mac/Linux launchers coming), Python and Node one-time setup, and a free Google Cloud OAuth credential — our 3-minute guide walks you through it. Then it's one double-click to start.</p></details>
+      <details><summary>What happens to my data if I stop using it?</summary><p>Nothing — that's the point. It's a file on your disk. Export everything to CSV anytime, or just delete the folder.</p></details>
+    </div>
+  </section>
+
+  <footer>
+    <div><b style="color:var(--text)">Spend Analyzer</b> · AI-powered expense intelligence, locally.</div>
+    <div>Made in India 🇮🇳 · Your data never leaves your machine</div>
+  </footer>
+</div>
+</body>
+</html>
